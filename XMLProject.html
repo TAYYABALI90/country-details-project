@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: sans-serif;
+        }
+
+        body {
+            background-color: #FF6666;
+        }
+
+        .container {
+            background-color: #0D0D0D;
+            width: 80vw;
+            max-width: 37.5em;
+            padding: 3em 2.5em;
+            position: absolute;
+            transform: translate(-50%, -50%);
+            top: 50%;
+            left: 50%;
+            border-radius: 0.62em;
+            box-shadow: 0 1.25em 1.8em rgba(8, 21, 65, 0.25);
+        }
+
+        .search-wrapper {
+            display: grid;
+            grid-template-columns: 9fr 3fr;
+            gap: 1.25em;
+        }
+
+        .search-wrapper button {
+            font-size: 1em;
+            background-color: #6A1B4D;
+            color: #ffffff;
+            padding: 0.8em 0;
+            border: none;
+            border-radius: 1.5em;
+        }
+
+        .search-wrapper input {
+            font-size: 1em;
+            padding: 0 0.62em;
+            border: none;
+            /* border-bottom: 2px solid #758283; */
+            background-color: #CAD5E2;
+            outline: none;
+            color: black;
+        }
+
+        .container .flag-img {
+            display: block;
+            width: 45%;
+            min-width: 7.5em;
+            margin: 1.8em auto 1.2em auto;
+        }
+
+        .container h2 {
+            font-weight: 600;
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1.8em;
+        }
+
+        .data-wrapper {
+            margin-bottom: 1em;
+            letter-spacing: 0.3px;
+        }
+
+        .container h4 {
+            display: inline;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .container span {
+            color: #03C6C7;
+        }
+
+        .container h3 {
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: 400;
+            color: #5A20CB;
+        }
+
+        #result {
+            margin-top: 1.25em;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="search-wrapper">
+            <input type="text" id="country-inp" placeholder="Enter A Country Name">
+            <button id="search-btn">Search</button>
+        </div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+
+        let searchBtn = document.querySelector("#search-btn");
+
+        let countryInp = document.querySelector("#country-inp");
+
+        let resultId = document.querySelector("#result");
+
+        searchBtn.addEventListener("click", () => {
+
+            let countryName = countryInp.value;
+
+            if (countryName.length == 0) {
+
+                resultId.innerHTML = `<h3>The Input Field Cannot Be Empty</h3>`;
+
+            } else {
+
+                resultId.innerHTML = `<h3>Please Enter A Valid Country Name</h3>`;
+
+            };
+
+            let finalUrl = `https://restcountries.com/v3.1/name/${countryName}?fullText=true`;
+
+            console.log(finalUrl);
+
+            request.open("GET", finalUrl);
+
+            request.send();
+
+        });
+
+        let request = new XMLHttpRequest();
+
+        request.addEventListener("readystatechange", () => {
+
+            if (request.readyState === 4 && request.status === 200) {
+
+                let data = JSON.parse(request.response);
+
+                // console.log(data[0]);
+
+                // console.log(data[0].capital[0]);
+
+                // console.log(data[0].flags.svg);
+
+                // console.log(data[0].name.common);
+
+                // console.log(data[0].continents[0]);
+
+                // console.log(Object.keys(data[0].currencies)[0]);
+
+                // console.log(data[0].currencies[Object.keys(data[0].currencies)].name)
+
+                // console.log(Object.values(data[0].languages).toString().split(",").join(", "));
+
+                resultId.innerHTML = `
+    
+           <img src="${data[0].flags.svg}" class="flag-img">
+
+           <h2>${data[0].name.common}</h2>
+
+           <div class="wrapper">
+           <div class="data-wrapper">
+           <h4>Capital:</h4>
+           <span>${data[0].capital[0]}</span>
+           </div>
+           </div>
+
+           <div class="wrapper">
+           <div class="data-wrapper">
+           <h4>Continent:</h4>
+           <span>${data[0].continents[0]}</span>
+           </div>
+           </div>
+
+           <div class="wrapper">
+           <div class="data-wrapper">
+           <h4>Population:</h4>
+           <span>${data[0].population}</span>
+           </div>
+           </div>
+
+           <div class="wrapper">
+           <div class="data-wrapper">
+           <h4>Currency:</h4>
+           <span>${data[0].currencies[Object.keys(data[0].currencies)].name} - ${Object.keys(data[0].currencies)[0]}</span>
+           </div>
+           </div>
+
+           <div class="wrapper">
+           <div class="data-wrapper">
+           <h4>Common Languages:</h4>
+           <span>${Object.values(data[0].languages).toString().split(",").join(", ")}</span>
+           </div>
+           </div>
+    
+        `;
+
+            } else if (request.readyState === 4) {
+
+                console.log("Failed");
+
+            };
+
+        });
+
+    </script>
+
+</body>
+
+</html>
